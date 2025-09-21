@@ -5,14 +5,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>io.github.cytaylorw</groupId>
-  <artifactId>common-utils</artifactId>
+  <artifactId>selenium-utils</artifactId>
   <version>0.0.1</version>
 
-  <name>common-utils</name>
+  <name>selenium-utils</name>
   <description>
-    This project is a library for common utilties.
+    This project is a library for selenium utilties.
   </description>
-  <url>https://github.com/cytaylorw/java-utils/tree/main/common-utils</url>
+  <url>https://github.com/cytaylorw/java-utils/tree/main/selenium-utils</url>
   
   <licenses>
     <license>
@@ -31,7 +31,7 @@
   <scm>
     <connection>scm:git:git@github.com:cytaylorw/java-utils.git</connection>
     <developerConnection>scm:git:ssh://github.com:cytaylorw/java-utils.git</developerConnection>
-    <url>https://github.com/cytaylorw/java-utils/tree/main/common-utils</url>
+    <url>https://github.com/cytaylorw/java-utils/tree/main/selenium-utils</url>
   </scm>
   
   <profiles>
@@ -109,9 +109,21 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
+	<selenium.version>4.35.0</selenium.version>
   </properties>
-
+    
   <dependencies>
+	<!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java -->
+	<dependency>
+	    <groupId>org.seleniumhq.selenium</groupId>
+	    <artifactId>selenium-java</artifactId>
+	    <version>4.35.0</version>
+	</dependency>
+	<dependency>
+	  <groupId>io.github.bonigarcia</groupId>
+	  <artifactId>webdrivermanager</artifactId>
+	  <version>6.3.2</version>
+	</dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
