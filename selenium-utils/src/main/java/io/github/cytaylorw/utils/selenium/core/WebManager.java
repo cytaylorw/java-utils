@@ -60,7 +60,7 @@ public class WebManager {
     	return conditions;
     }
     
-    public WebManager conditions(String locator) {
+    public WebManager locator(String locator) {
     	conditions.with(locator);
     	return this;
     }
@@ -137,7 +137,7 @@ public class WebManager {
     
     
     public void screenshot(String locator, String label) {
-    	WebElement element = this.conditions(locator).waitUntil(SmartConditions::visibilityOfElementLocated, null, null);
+    	WebElement element = this.locator(locator).waitUntil(SmartConditions::visibilityOfElementLocated, null, null);
     	new ScreenshotHelper(this).capture(element, label);
     }
         
