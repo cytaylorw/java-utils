@@ -98,4 +98,15 @@ public class ActionInteraction extends NativeInteraction {
         sleepBeforeAction();
         new Actions(driver).sendKeys(Keys.PAGE_UP).perform();
     }
+    
+    public void hover(WebElement element) {
+        sleepBeforeAction();
+        new Actions(driver).moveToElement(element).perform();
+
+    }
+    
+    public void hover() {
+    	hover(element);
+
+    }
 }

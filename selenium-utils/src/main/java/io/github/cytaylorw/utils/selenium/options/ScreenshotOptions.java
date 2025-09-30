@@ -7,7 +7,7 @@ public class ScreenshotOptions {
 
     private String folder;
     private boolean overwrite = true;
-    private FilenameFormatter formatter;
+    private FilenameFormatter formatter = FilenameFormatters.plain();
 
     public ScreenshotOptions(String folder) {
         this.folder = folder;
