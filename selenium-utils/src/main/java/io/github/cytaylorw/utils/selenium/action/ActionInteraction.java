@@ -10,11 +10,11 @@ import io.github.cytaylorw.utils.selenium.core.WebManager;
 public class ActionInteraction extends NativeInteraction {
 
     public ActionInteraction(WebManager manager) {
-        super(manager, null, LatencyProfile.robotic());
+        super(manager, null, manager.getOptions().actionLatency());
     }
     
     public ActionInteraction(WebManager manager, WebElement element) {
-    	super(manager, element, LatencyProfile.none());
+    	super(manager, element, manager.getOptions().actionLatency());
     }
 
     public ActionInteraction(WebManager manager, WebElement element, LatencyProfile latency) {

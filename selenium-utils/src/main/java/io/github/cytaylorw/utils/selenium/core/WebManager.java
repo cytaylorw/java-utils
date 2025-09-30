@@ -30,12 +30,12 @@ public class WebManager {
     private final BySmart by;
     private final SmartConditions conditions;
 
-    public WebManager(WebOptions options) {
+    public WebManager(WebDriver driver, WebOptions options) {
     	this.options = options;
-        this.driver = options.getDriver();
+        this.driver = driver;
         this.browser = new BrowserInteraction(this);
         this.wait = new WaitHelper(this);
-        this.by = BySmart.create(options.getStragegies());
+        this.by = BySmart.create(options.getStrategies());
         this.conditions = new SmartConditions(by);
     }
     

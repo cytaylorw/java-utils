@@ -14,11 +14,11 @@ public abstract class Interaction {
     protected final LatencyProfile latency;
 
     public Interaction(WebManager manager) {
-        this(manager, null, LatencyProfile.none());
+        this(manager, null, manager.getOptions().nativeLatency());
     }
     
     public Interaction(WebManager manager, WebElement element) {
-        this(manager, element, LatencyProfile.none());
+        this(manager, element, manager.getOptions().nativeLatency());
     }
 
     public Interaction(WebManager manager, WebElement element, LatencyProfile latency) {

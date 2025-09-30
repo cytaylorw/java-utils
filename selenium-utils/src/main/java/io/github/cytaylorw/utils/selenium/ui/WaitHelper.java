@@ -5,6 +5,7 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.FluentWait;
 
 import io.github.cytaylorw.utils.selenium.core.WebManager;
+import io.github.cytaylorw.utils.selenium.options.WaitOptions;
 
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
@@ -30,7 +31,7 @@ public class WaitHelper {
     public WaitHelper(WebManager manager) {
     	this.manager = manager;
         this.driver = manager.getDriver();
-    	this.defaultWait = create();
+    	this.defaultWait = create(manager.getOptions().waitOptions());
     }
     
     public WebManager manager() {
@@ -44,6 +45,12 @@ public class WaitHelper {
     // Basic FluentWait with defaults
     public FluentWait<WebDriver> create() {
         return create(DEFAULT_TIMEOUT, DEFAULT_POLLING, DEFAULT_IGNORED, null);
+    }
+    
+    public FluentWait<WebDriver> create(WaitOptions waitOtions) {
+    	if(waitOtions == null) return create();
+        return create(waitOtions.getTimeout(), waitOtions.getPollingInterval()
+        		, waitOtions.isIgnoreStale() ? DEFAULT_IGNORED : List.of(), null);
     }
 
     // Custom timeout and polling

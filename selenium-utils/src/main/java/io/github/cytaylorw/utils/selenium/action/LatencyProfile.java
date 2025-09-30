@@ -3,10 +3,13 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class LatencyProfile {
 
-    private final long baseMillis;
-    private final int jitterMillis;
-    private final boolean enabled;
+    private long baseMillis;
+    private int jitterMillis;
+    private boolean enabled;
 
+    public LatencyProfile() {
+    }
+    
     public LatencyProfile(long baseMillis, int jitterMillis, boolean enabled) {
         this.baseMillis = baseMillis;
         this.jitterMillis = jitterMillis;

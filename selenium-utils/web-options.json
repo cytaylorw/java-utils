@@ -1,0 +1,47 @@
+{
+  "normalScreenshotOptions": {
+    "folder": "D://tmp",
+    "overwrite": true,
+    "formatter": {
+      "type": "prefix",
+      "value": "TC"
+    }
+  },
+  "errorScreenshotOptions": {
+    "folder": "D://tmp",
+    "overwrite": false,
+    "formatter": "error"
+  },
+  "waitOptions": {
+    "timeout": "15",
+    "pollingInterval": "500",
+    "ignoreStale": true
+  },
+  "latencyProfile": {
+    "baseMillis": 300,
+    "jitterMillis": 100,
+    "enabled": true
+  },
+  "nativeLatencyProfile": {
+    "baseMillis": 100,
+    "jitterMillis": 20,
+    "enabled": true
+  },
+  "actionLatencyProfile": {
+    "baseMillis": 500,
+    "jitterMillis": 150,
+    "enabled": true
+  },
+  "robotLatencyProfile": {
+    "baseMillis": 1000,
+    "jitterMillis": 300,
+    "enabled": true
+  },
+  "strategies": [
+  	"auto",
+    "id",
+    "text",
+    "css",
+    "xpath"
+  ]
+}

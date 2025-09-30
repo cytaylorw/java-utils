@@ -31,14 +31,17 @@ public abstract class AbstractScreenshotHelper {
     }
     
     public AbstractScreenshotHelper(WebManager manager) {
-        this(manager, manager.getOptions().screenshot(), manager.getOptions().lowLatency());
+        this(manager, manager.getOptions().screenshot(), manager.getOptions().nativeLatency());
     }
     
     
     public AbstractScreenshotHelper(WebManager manager, ScreenshotOptions options) {
-        this(manager, options, manager.getOptions().lowLatency());
+        this(manager, options, manager.getOptions().nativeLatency());
     }
 
+    protected void sleepBeforeAction() {
+        latency.apply();
+    }
 
     public abstract Path capture(String label);
 }

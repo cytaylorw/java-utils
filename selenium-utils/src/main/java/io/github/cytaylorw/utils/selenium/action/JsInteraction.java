@@ -8,11 +8,11 @@ import io.github.cytaylorw.utils.selenium.core.WebManager;
 public class JsInteraction extends Interaction {
 
     public JsInteraction(WebManager manager) {
-        super(manager, null, LatencyProfile.robotic());
+        super(manager, null, manager.getOptions().jsLatency());
     }
     
     public JsInteraction(WebManager manager, WebElement element) {
-    	super(manager, element, LatencyProfile.none());
+    	super(manager, element, manager.getOptions().jsLatency());
     }
 
     public JsInteraction(WebManager manager, WebElement element, LatencyProfile latency) {

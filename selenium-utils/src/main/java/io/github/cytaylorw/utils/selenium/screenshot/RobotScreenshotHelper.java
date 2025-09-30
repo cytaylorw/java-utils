@@ -24,12 +24,12 @@ public class RobotScreenshotHelper extends AbstractScreenshotHelper {
     }
     
     public RobotScreenshotHelper(WebManager manager) {
-    	super(manager, manager.getOptions().screenshot(), manager.getOptions().lowLatency());
+    	super(manager, manager.getOptions().screenshot(), manager.getOptions().robotLatency());
     }
     
     
     public RobotScreenshotHelper(WebManager manager, ScreenshotOptions options) {
-    	super(manager, options, manager.getOptions().lowLatency());
+    	super(manager, options, manager.getOptions().robotLatency());
     }
 
     @Override
@@ -83,6 +83,7 @@ public class RobotScreenshotHelper extends AbstractScreenshotHelper {
 
     // 📐 Capture a specific region
     public Path captureRegion(Rectangle region, String label) {
+    	sleepBeforeAction();
         String filename = formatter.apply(label);
         Path destination = baseFolder.resolve(filename);
 

@@ -12,16 +12,16 @@ public class WaitOptions {
         return timeout;
     }
 
-    public void setTimeout(Duration timeout) {
-        this.timeout = timeout;
+    public void setTimeout(Long seconds) {
+        this.timeout = Duration.ofSeconds(seconds);
     }
 
     public Duration getPollingInterval() {
         return pollingInterval;
     }
 
-    public void setPollingInterval(Duration pollingInterval) {
-        this.pollingInterval = pollingInterval;
+    public void setPollingInterval(Long millis) {
+        this.pollingInterval = Duration.ofMillis(500);
     }
 
     public boolean isIgnoreStale() {

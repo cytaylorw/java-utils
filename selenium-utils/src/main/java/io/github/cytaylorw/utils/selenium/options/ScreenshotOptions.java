@@ -1,5 +1,9 @@
 package io.github.cytaylorw.utils.selenium.options;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import io.github.cytaylorw.utils.selenium.options.json.FilenameFormatterDeserializer;
 import io.github.cytaylorw.utils.selenium.screenshot.FilenameFormatter;
 import io.github.cytaylorw.utils.selenium.screenshot.FilenameFormatters;
 
@@ -9,6 +13,9 @@ public class ScreenshotOptions {
     private boolean overwrite = true;
     private FilenameFormatter formatter = FilenameFormatters.plain();
 
+    public ScreenshotOptions() {
+    }
+    
     public ScreenshotOptions(String folder) {
         this.folder = folder;
     }
@@ -37,6 +44,8 @@ public class ScreenshotOptions {
         return formatter;
     }
 
+    @JsonDeserialize(contentUsing = FilenameFormatterDeserializer.class)
+    @JsonProperty("formatter")
     public void setFormatter(FilenameFormatter formatter) {
         this.formatter = formatter;
     }

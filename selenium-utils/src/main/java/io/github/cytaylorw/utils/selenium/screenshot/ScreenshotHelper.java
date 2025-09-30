@@ -23,17 +23,18 @@ public class ScreenshotHelper extends AbstractScreenshotHelper {
     }
     
     public ScreenshotHelper(WebManager manager) {
-    	super(manager, manager.getOptions().screenshot(), manager.getOptions().lowLatency());
+    	super(manager, manager.getOptions().screenshot(), manager.getOptions().screenshotLatency());
     }
     
     
     public ScreenshotHelper(WebManager manager, ScreenshotOptions options) {
-    	super(manager, options, manager.getOptions().lowLatency());
+    	super(manager, options, manager.getOptions().screenshotLatency());
     }
 
 
     @Override
     public Path capture(String label) {
+    	sleepBeforeAction();
         String filename = formatter.apply(label);
         Path destination = baseFolder.resolve(filename);
 
@@ -48,6 +49,7 @@ public class ScreenshotHelper extends AbstractScreenshotHelper {
     }
     
     public Path capture(WebElement element, String label) {
+    	sleepBeforeAction();
         String filename = formatter.apply(label);
         Path destination = baseFolder.resolve(filename);
 
