@@ -78,6 +78,24 @@ public class SmartConditions {
     public ExpectedCondition<List<WebElement>> numberOfElementsToBe(int count) {
         return ExpectedConditions.numberOfElementsToBe(bySmart, count);
     }
+    
+    // Custom
+    public ExpectedCondition<WebElement> textContains(String substring) {
+    	return CustomConditions.textContains(bySmart, substring);
+    }
+    
+    public ExpectedCondition<Boolean> disabled() {
+    	return CustomConditions.disabled(bySmart);
+    }
+    
+    public ExpectedCondition<Boolean> notPresent() {
+    	return CustomConditions.notPresent(bySmart);
+    }    
+    
+    
+    public ExpectedCondition<WebElement> inputReady() {
+    	return CustomConditions.inputReady(bySmart);
+    }   
 
     public BySmart getBySmart() {
         return bySmart;

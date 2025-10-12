@@ -27,7 +27,6 @@ public class NativeInteraction extends Interaction {
     @Override
     public void type(WebElement element, String text) {
         sleepBeforeAction();
-        element.clear();
         element.sendKeys(text);
     }
 

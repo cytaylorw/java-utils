@@ -6,21 +6,40 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 
 public class CustomConditions {
 
-    public static ExpectedCondition<Boolean> textContains(By locator, String substring) {
+    public static ExpectedCondition<WebElement> textContains(By locator, String substring) {
         return driver -> {
             try {
                 WebElement el = driver.findElement(locator);
-                return el.getText().contains(substring);
+                return el.getText().contains(substring) ? el : null;
             } catch (Exception e) {
-                return false;
+                return null;
             }
         };
     }
 
-    public static ExpectedCondition<WebElement> visibleAndEnabled(By locator) {
+    public static ExpectedCondition<Boolean> disabled(By locator) {
         return driver -> {
             WebElement el = driver.findElement(locator);
-            return (el.isDisplayed() && el.isEnabled()) ? el : null;
+            return !el.isEnabled() || el.getAttribute("disabled") != null;
+        };
+    }
+    
+    public static ExpectedCondition<Boolean> notPresent(By locator) {
+        return driver -> {
+            return driver.findElements(locator).isEmpty();
+        };
+    }
+    
+    public static ExpectedCondition<WebElement> inputReady(By locator) {
+        return driver -> {
+            WebElement el = driver.findElement(locator);
+            boolean visible = el.isDisplayed();
+            boolean enabled = el.isEnabled();
+            String readonly = el.getAttribute("readonly");
+            boolean isReadonly = readonly != null;
+
+            return visible && enabled && !isReadonly ? el : null;
+
         };
     }
 }
