@@ -1,10 +1,27 @@
 package io.github.cytaylorw.utils.selenium.options;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
+import java.util.logging.Formatter;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import io.github.cytaylorw.utils.selenium.action.LatencyProfile;
 import io.github.cytaylorw.utils.selenium.by.ByStrategies;
 import io.github.cytaylorw.utils.selenium.by.ByStrategy;
+import io.github.cytaylorw.utils.selenium.test.data.TestData;
+import io.github.cytaylorw.utils.selenium.test.log.TestLogFormatter;
 
 public class WebOptions {
 
@@ -21,8 +38,13 @@ public class WebOptions {
 	private LatencyProfile robotLatencyProfile;
 
 	private List<ByStrategy> strategies;
+	
+	private String dataFile;
+	
+	private String resultFolder;
+	private String logFolder;
 
-    public WebOptions() {
+	public WebOptions() {
         this.strategies = ByStrategies.defaultChain();
     }
     
@@ -108,7 +130,37 @@ public class WebOptions {
         return robotLatencyProfile == null ? latencyProfile : robotLatencyProfile;
     }
     
-    @Override
+    public String getDataFile() {
+    	return dataFile;
+    }
+    
+    public void setDataFile(String dataFile) {
+    	this.dataFile = dataFile;
+    	TestData.readFromJson(dataFile);
+    }
+    
+    public String getResultFolder() {
+		return resultFolder;
+	}
+
+	public void setResultFolder(String resultFolder) {
+		this.resultFolder = resultFolder;
+		ensureFolderExists(resultFolder);
+		TestData.put("resultFolder", resultFolder);
+	}
+
+	public String getLogFolder() {
+		return logFolder;
+		
+	}
+
+	public void setLogFolder(String logFolder) {
+		this.logFolder = logFolder;
+		ensureFolderExists(logFolder);
+		configLogger();
+	}
+
+	@Override
     public String toString() {
         return "WebOptions {" +
             "\n  Screenshot Folder: " + (screenshot() != null ? screenshot().getFolder() : "null") +
@@ -118,6 +170,53 @@ public class WebOptions {
             "\n  Ignore Stale: " + (waitOptions() != null && waitOptions().isIgnoreStale()) +
             "\n  Latency Profile: " + (latency() != null ? latency().toString() : "null") +
             "\n  Strategies: " + (strategies != null ? strategies.size() + " configured :  1st element: " + strategies.get(0) : "null") +
+            "\n  Data file: " + (getDataFile() != null ? getDataFile() : "null") +
             "\n}";
+    }
+	
+    private void ensureFolderExists(String folder) {
+        Path path = Paths.get(folder);
+        try {
+            Files.createDirectories(path);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    private void configLogger() {
+        try {
+        	Formatter LogFormatter = new TestLogFormatter();
+
+        	
+            // Generate timestamped filename
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+            String timestamp = LocalDateTime.now().format(formatter);
+            String logFileName = Optional.ofNullable(logFolder).orElse("logs") + File.separator + "app_" + timestamp + ".log";
+
+            // Create file handler
+            FileHandler fileHandler = new FileHandler(logFileName, true);
+            fileHandler.setEncoding("UTF-8");
+            fileHandler.setFormatter(LogFormatter);
+            
+            // Console handler
+            ConsoleHandler consoleHandler = new ConsoleHandler();
+            consoleHandler.setFormatter(LogFormatter);
+
+
+            // Configure root logger
+            Logger rootLogger = Logger.getLogger("");
+            rootLogger.setLevel(Level.INFO);
+            rootLogger.setUseParentHandlers(false);
+
+            for (Handler handler : rootLogger.getHandlers()) {
+                rootLogger.removeHandler(handler);
+            }
+
+            rootLogger.addHandler(fileHandler);
+            rootLogger.addHandler(consoleHandler); 
+
+        } catch (IOException e) {
+            System.err.println("Failed to configure logging: " + e.getMessage());
+        }
     }
 }

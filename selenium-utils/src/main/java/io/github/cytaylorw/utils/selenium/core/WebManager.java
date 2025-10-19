@@ -1,10 +1,13 @@
 package io.github.cytaylorw.utils.selenium.core;
 
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -38,7 +41,7 @@ public class WebManager {
         this.by = BySmart.create(options.getStrategies());
         this.conditions = new SmartConditions(by);
     }
-    
+
 
     public WebOptions getOptions() {
         return options;
@@ -51,24 +54,28 @@ public class WebManager {
     public BrowserInteraction browser() {
         return browser;
     }
-    
+
     public BySmart by() {
         return by;
     }
-    
+
     public SmartConditions conditions() {
     	return conditions;
     }
     
+    public <T> ExpectedCondition<T> condition(Function<SmartConditions, ExpectedCondition<T>> conditionFunction) {
+    	return conditionFunction.apply(conditions);
+    }
+
     public WebManager locator(String locator) {
     	conditions.with(locator);
     	return this;
     }
-    
+
     public WaitHelper getWait() {
     	return wait;
-    }    
-    
+    }
+
     public <T> T waitUntil(ExpectedCondition<T> condition, Long timeoutInSec, Long pollingInMs) {
     	FluentWait<WebDriver> wait = this.wait.getDefault();
     	if(Objects.nonNull(timeoutInSec)) {
@@ -79,20 +86,20 @@ public class WebManager {
     	}
     	return this.wait.waitUntil(wait, condition);
     }
-    
-    
+
+
     public <T> T waitUntil(Function<SmartConditions, ExpectedCondition<T>> conditionFunction, Long timeoutInSec, Long pollingInMs) {
-    	return waitUntil(conditionFunction.apply(conditions), timeoutInSec, null);
+    	return waitUntil(condition(conditionFunction), timeoutInSec, null);
     }
-    
+
     public <T> T waitUntil(Function<SmartConditions, ExpectedCondition<T>> conditionFunction, Long timeoutInSec) {
     	return waitUntil(conditionFunction, timeoutInSec, null);
     }
-    
+
     public <T> T waitUntil(Function<SmartConditions, ExpectedCondition<T>> conditionFunction) {
     	return waitUntil(conditionFunction, null, null);
     }
-    
+
     public <A extends Interaction> A action(ExpectedCondition<WebElement> condition, Class<A> clazz) {
     	WebElement element = waitUntil(condition, null, null);
     	try {
@@ -101,23 +108,38 @@ public class WebManager {
 			throw new RuntimeException("System Failed to: " + e.getMessage(), e);
 		}
     }
-    
+
     public <A extends Interaction> A action(Function<SmartConditions, ExpectedCondition<WebElement>> conditionFunction, Class<A> clazz) {
-    	return action(conditionFunction.apply(conditions), clazz);
+    	return action(condition(conditionFunction), clazz);
     }
-        
+
     public NativeInteraction action(Function<SmartConditions, ExpectedCondition<WebElement>> conditionFunction) {
     	return action(conditionFunction, NativeInteraction.class);
     }
-    
+
     public <T> Optional<T> tryUntil(ExpectedCondition<T> condition) {
     	return this.wait.tryUntil(condition);
     }
-    
+
     public <T> Optional<T> tryUntil(ExpectedCondition<T> condition, FluentWait<WebDriver> wait) {
     	return WaitHelper.tryUntil(wait, condition);
     }
-    
+
+    public <T> boolean isConditionMet(Function<SmartConditions, ExpectedCondition<T>> conditionFunction) {
+        return isConditionMet(condition(conditionFunction));
+    }
+
+    public <T> boolean isConditionMet(ExpectedCondition<T> condition) {
+        FluentWait<WebDriver> wait = new FluentWait<>(driver)
+            .withTimeout(Duration.ofSeconds(1)) // minimal timeout
+            .pollingEvery(Duration.ofMillis(200))
+            .ignoring(NoSuchElementException.class)
+            .ignoring(StaleElementReferenceException.class);
+
+        return tryUntil(condition, wait).isPresent();
+    }
+
+
     public <S extends AbstractScreenshotHelper> S screenshot(Class<S> clazz) {
     	try {
 			return clazz.getDeclaredConstructor(WebManager.class).newInstance(this);
@@ -125,27 +147,26 @@ public class WebManager {
 			throw new RuntimeException("System Failed to: " + e.getMessage(), e);
 		}
     }
-        
-    public void screenshot(String label) {
-    	new ScreenshotHelper(this).capture(label);
+
+    public Path screenshot(String label) {
+    	return new ScreenshotHelper(this).capture(label);
     }
-    
-    public void screenshot(Function<SmartConditions, ExpectedCondition<WebElement>> conditionFunction, String label) {
-    	WebElement element = waitUntil(conditionFunction.apply(conditions), null, null);
-    	new ScreenshotHelper(this).capture(element, label);
+
+    public Path screenshot(Function<SmartConditions, ExpectedCondition<WebElement>> conditionFunction, String label) {
+    	WebElement element = waitUntil(condition(conditionFunction), null, null);
+    	return new ScreenshotHelper(this).capture(element, label);
     }
-    
-    
-    public void screenshot(String locator, String label) {
+
+
+    public Path screenshot(String locator, String label) {
     	WebElement element = this.locator(locator).waitUntil(SmartConditions::visibilityOfElementLocated, null, null);
-    	new ScreenshotHelper(this).capture(element, label);
+    	return new ScreenshotHelper(this).capture(element, label);
     }
-        
+
     public RobotScreenshotHelper errorScreenshot() {
     	return new RobotScreenshotHelper(this, options.errorScreenshot());
     }
-    
-    
+
     public void quit() {
         if (driver != null) {
             driver.quit();

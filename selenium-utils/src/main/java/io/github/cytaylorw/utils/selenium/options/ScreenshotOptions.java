@@ -1,5 +1,11 @@
 package io.github.cytaylorw.utils.selenium.options;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.logging.Logger;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
@@ -8,6 +14,8 @@ import io.github.cytaylorw.utils.selenium.screenshot.FilenameFormatter;
 import io.github.cytaylorw.utils.selenium.screenshot.FilenameFormatters;
 
 public class ScreenshotOptions {
+	
+	private static final Logger logger = Logger.getLogger(ScreenshotOptions.class.getName());
 
     private String folder;
     private boolean overwrite = true;
@@ -17,7 +25,7 @@ public class ScreenshotOptions {
     }
     
     public ScreenshotOptions(String folder) {
-        this.folder = folder;
+        this.setFolder(folder);
     }
 
     public static ScreenshotOptions of(String folder) {
@@ -30,6 +38,8 @@ public class ScreenshotOptions {
 
     public void setFolder(String folder) {
         this.folder = folder;
+        ensureFolderExists();
+        
     }
 
     public boolean isOverwrite() {
@@ -57,5 +67,17 @@ public class ScreenshotOptions {
         error.setFormatter(FilenameFormatters.errorFormatter());
         return error;
     }
+
+    private void ensureFolderExists() {
+        Path path = Paths.get(folder);
+        try {
+            Files.createDirectories(path);
+            logger.info("Folder path: " + path.toAbsolutePath());
+        } catch (IOException e) {
+            logger.severe("Failed to create folder: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+
 
 }

@@ -13,14 +13,14 @@ import io.github.cytaylorw.utils.selenium.ui.CustomConditions;
 import io.github.cytaylorw.utils.selenium.ui.SmartConditions;
 
 public class Waits {
-	
+
     public static <T, R extends TestRunner<R>> Consumer<R>  waitFor(ExpectedCondition<T> condition) {
 		return r -> {
 			WebManager wm = r.getManager();
 			wm.waitUntil(condition, null, null);
 		};
     }
-	
+
     public static <T, R extends TestRunner<R>> Consumer<R>  waitFor(ExpectedCondition<T> condition, Long timeoutInSec) {
 		return r -> {
 			WebManager wm = r.getManager();
@@ -35,13 +35,20 @@ public class Waits {
 		};
     }
     
+    public static <T, R extends TestRunner<R>> Consumer<R>  waitFor(String locator, Function<SmartConditions, ExpectedCondition<T>> conditionFunction, Long timeoutInSec) {
+		return r -> {
+			WebManager wm = r.getManager();
+			wm.locator(locator).waitUntil(conditionFunction, timeoutInSec);
+		};
+    }
+
     public static <R extends TestRunner<R>> Consumer<R>  waitForDisabled(String locator) {
 		return r -> {
 			WebManager wm = r.getManager();
 			wm.locator(locator).waitUntil(SmartConditions::disabled);
 		};
     }
-    
+
     public static <R extends TestRunner<R>> Consumer<R>  waitForDisabled(String locator, Long timeoutInSec) {
 		return r -> {
 			WebManager wm = r.getManager();
@@ -55,14 +62,14 @@ public class Waits {
 			wm.waitUntil(CustomConditions.disabled(locator), timeoutInSec, pollingInMs);
 		};
     }
-    
+
     public static <R extends TestRunner<R>> Consumer<R>  waitForNotPresent(String locator) {
 		return r -> {
 			WebManager wm = r.getManager();
 			wm.locator(locator).waitUntil(SmartConditions::notPresent);
 		};
     }
-    
+
 
     public static <R extends TestRunner<R>> Consumer<R>  waitForNotPresent(String locator, Long timeoutInSec) {
 		return r -> {
@@ -84,7 +91,7 @@ public class Waits {
 			wm.locator(locator).waitUntil(SmartConditions::invisibilityOfElementLocated);
 		};
     }
-    
+
 
     public static <R extends TestRunner<R>> Consumer<R>  waitForHidden(String locator, Long timeoutInSec) {
 		return r -> {
@@ -99,7 +106,7 @@ public class Waits {
 			wm.waitUntil(ExpectedConditions.invisibilityOfElementLocated(locator), timeoutInSec, pollingInMs);
 		};
     }
-    
+
 
     public static <R extends TestRunner<R>> Consumer<R> waitForVisible(String locator) {
 		return r -> {
@@ -107,7 +114,7 @@ public class Waits {
 			wm.locator(locator).waitUntil(SmartConditions::visibilityOfElementLocated);
 		};
     }
-    
+
 
     public static <R extends TestRunner<R>> Consumer<R> waitForVisible(String locator, Long timeoutInSec) {
 		return r -> {

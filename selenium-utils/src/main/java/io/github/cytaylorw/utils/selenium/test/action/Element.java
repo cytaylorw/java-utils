@@ -11,33 +11,34 @@ import io.github.cytaylorw.utils.selenium.action.Interaction;
 import io.github.cytaylorw.utils.selenium.action.NativeInteraction;
 import io.github.cytaylorw.utils.selenium.core.WebManager;
 import io.github.cytaylorw.utils.selenium.test.TestRunner;
+import io.github.cytaylorw.utils.selenium.test.data.TestData;
 import io.github.cytaylorw.utils.selenium.ui.CustomConditions;
 import io.github.cytaylorw.utils.selenium.ui.SmartConditions;
 
 public class Element {
-	
+
 	public static <R extends TestRunner<R>> Consumer<R> action(String locator, Consumer<NativeInteraction> action){
 		return r -> {
 			WebManager wm = r.getManager();
 			action.accept(wm.locator(locator).action(SmartConditions::elementToBeClickable));
 		};
 	}
-	
+
 	public static <A extends Interaction, R extends TestRunner<R>> Consumer<R> action(String locator, Class<A> clazz, Consumer<A> action){
 		return r -> {
 			WebManager wm = r.getManager();
 			action.accept(wm.locator(locator).action(SmartConditions::elementToBeClickable, clazz));
 		};
 	}
-		
+
 	public static <A extends Interaction, R extends TestRunner<R>> Consumer<R> action(By locator, Class<A> clazz, Consumer<A> action){
 		return r -> {
 			WebManager wm = r.getManager();
 			action.accept(wm.action(ExpectedConditions.elementToBeClickable(locator), clazz));
 		};
 	}
-	
-	
+
+
 	public static <A extends Interaction, R extends TestRunner<R>> Consumer<R> action(ExpectedCondition<WebElement> condition, Class<A> clazz, Consumer<A> action){
 		return r -> {
 			WebManager wm = r.getManager();
@@ -51,25 +52,72 @@ public class Element {
 			wm.locator(locator).action(SmartConditions::elementToBeClickable).click();
 		};
 	}
-	
+
 	public static <R extends TestRunner<R>> Consumer<R> click(By locator){
 		return r -> {
 			WebManager wm = r.getManager();
 			wm.action(ExpectedConditions.elementToBeClickable(locator), NativeInteraction.class).click();
 		};
 	}
-	
+
 	public static <R extends TestRunner<R>> Consumer<R> type(String locator, String text){
 		return r -> {
 			WebManager wm = r.getManager();
-			wm.locator(locator).action(SmartConditions::inputReady).type(text);;
+			wm.locator(locator).action(SmartConditions::inputReady).type(text);
 		};
 	}
-	
+
 	public static <R extends TestRunner<R>> Consumer<R> type(By locator, String text){
 		return r -> {
 			WebManager wm = r.getManager();
 			wm.action(CustomConditions.inputReady(locator), NativeInteraction.class).type(text);
+		};
+	}
+
+	public static <R extends TestRunner<R>> Consumer<R> value(String locator, String text){
+		return r -> {
+			WebManager wm = r.getManager();
+			NativeInteraction action = wm.locator(locator).action(SmartConditions::inputReady);
+			action.clear();
+			action.type(text);
+		};
+	}
+
+	public static <R extends TestRunner<R>> Consumer<R> value(By locator, String text){
+		return r -> {
+			WebManager wm = r.getManager();
+			NativeInteraction action = wm.action(CustomConditions.inputReady(locator), NativeInteraction.class);
+			action.clear();
+			action.type(text);
+		};
+	}
+
+	public static <R extends TestRunner<R>> Consumer<R> valueFromData(String locator, String dataKey){
+		return r -> {
+			WebManager wm = r.getManager();
+			String value = TestData.getAsString(dataKey);
+			NativeInteraction action = wm.locator(locator).action(SmartConditions::inputReady);
+			action.clear();
+			action.type(value);
+		};
+	}
+
+	public static <R extends TestRunner<R>> Consumer<R> valueFromData(String locator){
+		return r -> {
+			WebManager wm = r.getManager();
+			String value = TestData.getAsString(locator);
+			NativeInteraction action = wm.locator(locator).action(SmartConditions::inputReady);
+			action.clear();
+			action.type(value);
+		};
+	}
+	public static <R extends TestRunner<R>> Consumer<R> valueFromData(By locator, String dataKey){
+		return r -> {
+			WebManager wm = r.getManager();
+			String value = TestData.getAsString(dataKey);
+			NativeInteraction action = wm.action(CustomConditions.inputReady(locator), NativeInteraction.class);
+			action.clear();
+			action.type(value);
 		};
 	}
 }
